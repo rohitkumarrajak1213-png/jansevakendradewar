@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Customer Registration - Jan Seva Kendra Dewar</title>
+    <style>
+        body {
+            background-color: #f4f7f6;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .register-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .register-container h2 {
+            color: #003366;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .register-btn:hover {
+            background-color: #002244;
+        }
+        
+        .login-link {
+            margin-top: 15px;
+            display: block;
+            color: #003366;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .login-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-container">
+        <h2>Naya Account Banayein</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">Pura Naam</label>
+                <input type="text" id="name" placeholder=" Apna pura naam darj karein" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="text" id="mobile" placeholder="10-digit mobile number dalein" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password Set Karein</label>
+                <input type="password" id="password" placeholder="Naya password banayein" required>
+            </div>
+
+            <button type="submit" class="register-btn">Register Karein</button>
+        </form>
+
+        <a href="login.html" class="login-link">Pehle se account hai? Login Karein</a>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+
+            if (mobile.length === 10) {
+                alert('Registration successful! Ab aap login kar sakte hain.');
+                window.location.href = 'login.html';
+            } else {
+                alert('Kripya sahi 10-digit mobile number darj karein.');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
