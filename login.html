@@ -64,30 +64,61 @@
 
     </div>
 
-    <!-- 3. Customer Dashboard & History (Hidden by default, shown after login) -->
+    <!-- 3. Customer Dashboard & Service Buying Section (Hidden until login) -->
     <div id="dashboardSection" class="max-w-6xl mx-auto p-4 md:p-6 mt-4 hidden">
-        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h2 class="text-lg font-bold text-gray-800" id="welcomeMsg">👋 स्वागत है, </h2>
-                <button id="logoutBtn" class="bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-red-600">लॉगआउट</button>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <h3 class="text-md font-semibold text-gray-700 mb-3">📋 आपकी ली गई सेवाओं का इतिहास (Service History)</h3>
-            <div class="overflow-x-auto rounded-lg border border-gray-200">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-700 text-sm border-b">
-                            <th class="p-3">दिनांक</th>
-                            <th class="p-3">सर्विस का नाम</th>
-                            <th class="p-3">राशि</th>
-                            <th class="p-3">स्थिति (Status)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="customerHistoryBody" class="text-sm text-gray-600 divide-y divide-gray-200">
-                        <!-- Data will load here dynamically -->
-                    </tbody>
-                </table>
+            <!-- Left: Buy / Request New Service Form -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 md:col-span-1">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">🛒 नई सर्विस खरीदें</h2>
+                <form id="buyServiceForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">सर्विस चुनें</label>
+                        <select id="buyServiceName" class="w-full p-2.5 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500">
+                            <option value="MPOnline / CSC Service">MPOnline / CSC Service (₹50)</option>
+                            <option value="Aadhaar / PAN Update">Aadhaar / PAN Update (₹100)</option>
+                            <option value="Income/Caste/Domicile">आय/निवास/जाति प्रमाण पत्र (₹60)</option>
+                            <option value="Banking / CSP Transaction">बैंकिंग / CSP Transaction (₹20)</option>
+                            <option value="Other Utility Service">अन्य डिजिटल सेवा (₹50)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">शुल्क / राशि (₹)</label>
+                        <input type="number" id="buyServiceAmount" required class="w-full p-2.5 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500" placeholder="राशि दर्ज करें">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">विशेष विवरण (यदि कोई हो)</label>
+                        <textarea id="buyServiceNote" rows="2" class="w-full p-2.5 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500" placeholder="अपनी समस्या या काम की डिटेल लिखें..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-bold hover:bg-blue-700 shadow transition">सर्विस के लिए आर्डर दें</button>
+                </form>
             </div>
+
+            <!-- Right: Welcome & Service History Table -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 md:col-span-2">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <h2 class="text-lg font-bold text-gray-800" id="welcomeMsg">👋 स्वागत है, </h2>
+                    <button id="logoutBtn" class="bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-red-600">लॉगआउट</button>
+                </div>
+                
+                <h3 class="text-md font-semibold text-gray-700 mb-3">📋 आपके आर्डर और सेवाओं का इतिहास (Service History)</h3>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700 text-sm border-b">
+                                <th class="p-3">दिनांक</th>
+                                <th class="p-3">सर्विस का नाम</th>
+                                <th class="p-3">राशि</th>
+                                <th class="p-3">स्थिति (Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerHistoryBody" class="text-sm text-gray-600 divide-y divide-gray-200">
+                            <!-- Data will load here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -108,6 +139,9 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        let currentCustomerMobile = "";
+        let currentCustomerName = "";
 
         // Toggle between Login and Register views
         const loginCard = document.getElementById('loginCard');
@@ -143,7 +177,6 @@
                 await addDoc(collection(db, "customers"), { name, mobile, password });
                 alert("✅ रजिस्ट्रेशन सफल रहा! अब आप लॉगिन कर सकते हैं।");
                 registerForm.reset();
-                // Switch back to login view after successful registration
                 registerCard.classList.add('hidden');
                 loginCard.classList.remove('hidden');
             } catch (error) {
@@ -168,15 +201,16 @@
                     return;
                 }
 
-                let customerName = "";
                 querySnapshot.forEach((doc) => {
-                    customerName = doc.data().name;
+                    currentCustomerName = doc.data().name;
                 });
+
+                currentCustomerMobile = mobile;
 
                 // Hide login card and show dashboard
                 loginCard.classList.add('hidden');
                 document.getElementById('dashboardSection').classList.remove('hidden');
-                document.getElementById('welcomeMsg').innerText = `👋 स्वागत है, ${customerName}`;
+                document.getElementById('welcomeMsg').innerText = `👋 स्वागत है, ${currentCustomerName}`;
 
                 // Load Customer History
                 loadCustomerHistory(mobile);
@@ -187,7 +221,35 @@
             }
         });
 
-        // 3. Load History for Logged-in Customer
+        // 3. Customer Buy / Order New Service
+        const buyServiceForm = document.getElementById('buyServiceForm');
+        buyServiceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const service = document.getElementById('buyServiceName').value;
+            const amount = document.getElementById('buyServiceAmount').value;
+            const note = document.getElementById('buyServiceNote').value;
+            const date = new Date().toLocaleDateString('hi-IN');
+
+            try {
+                await addDoc(collection(db, "customer_services"), {
+                    name: currentCustomerName,
+                    mobile: currentCustomerMobile,
+                    service: service + (note ? ` (${note})` : ''),
+                    amount: amount,
+                    status: "Pending",
+                    date: date
+                });
+
+                alert("✅ आपकी सर्विस का आर्डर सफलतापूक दर्ज हो गया है!");
+                buyServiceForm.reset();
+                loadCustomerHistory(currentCustomerMobile); // Refresh history table
+            } catch (error) {
+                console.error("Error adding service order:", error);
+                alert("❌ आर्डर सबमिट करने में त्रुटि हुई!");
+            }
+        });
+
+        // 4. Load History for Logged-in Customer
         async function loadCustomerHistory(mobile) {
             const tableBody = document.getElementById('customerHistoryBody');
             tableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-blue-600 font-medium">आपका डेटा लोड हो रहा है...</td></tr>`;
@@ -199,7 +261,7 @@
                 tableBody.innerHTML = "";
 
                 if (querySnapshot.empty) {
-                    tableBody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500 font-medium">आपने अभी तक कोई सर्विस नहीं ली है।</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500 font-medium">आपने अभी तक कोई सर्विस नहीं खरीदी है।</td></tr>`;
                     return;
                 }
 
