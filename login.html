@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="hi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jan Seva Kendra - Customer Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-slate-100 font-sans">
 
     <!-- Header -->
@@ -16,10 +14,31 @@
         <span class="text-sm bg-blue-700 px-3 py-1 rounded-full shadow">Dewar, Satna (M.P.)</span>
     </header>
 
-    <div class="max-w-6xl mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+    <div class="max-w-md mx-auto p-4 md:p-6 mt-10">
+        
+        <!-- 1. Customer Login Section (Default Visible) -->
+        <div id="loginCard" class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">🔐 कस्टमर लॉगिन (Login)</h2>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">मोबाइल नंबर</label>
+                    <input type="tel" id="loginMobile" pattern="[0-9]{10}" required class="w-full p-2.5 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500" placeholder="अपना रजिस्टर्ड मोबाइल नंबर दर्ज करें">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">पासवर्ड / पिन</label>
+                    <input type="password" id="loginPassword" required class="w-full p-2.5 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500" placeholder="अपना पासवर्ड दर्ज करें">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 shadow transition">लॉगिन करें</button>
+            </form>
+            
+            <!-- Sign Up Link below Login -->
+            <div class="mt-4 text-center text-sm text-gray-600 border-t pt-3">
+                नया ग्राहक हैं? <button id="showRegister" class="text-blue-600 font-bold hover:underline focus:outline-none">अकाउंट बनाएं (Sign Up)</button>
+            </div>
+        </div>
 
-        <!-- 1. Customer Registration / Signup Section -->
-        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+        <!-- 2. Customer Registration / Signup Section (Hidden by default) -->
+        <div id="registerCard" class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hidden">
             <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">📝 नया कस्टमर रजिस्ट्रेशन (Sign Up)</h2>
             <form id="registerForm" class="space-y-4">
                 <div>
@@ -36,22 +55,11 @@
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-bold hover:bg-blue-700 shadow transition">अकाउंट बनाएं</button>
             </form>
-        </div>
 
-        <!-- 2. Customer Login Section -->
-        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">🔐 कस्टमर लॉगिन (Login)</h2>
-            <form id="loginForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">मोबाइल नंबर</label>
-                    <input type="tel" id="loginMobile" pattern="[0-9]{10}" required class="w-full p-2.5 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500" placeholder="अपना रजिस्टर्ड मोबाइल नंबर दर्ज करें">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">पासवर्ड / पिन</label>
-                    <input type="password" id="loginPassword" required class="w-full p-2.5 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500" placeholder="अपना पासवर्ड दर्ज करें">
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 shadow transition">लॉगिन करें</button>
-            </form>
+            <!-- Login Link below Register -->
+            <div class="mt-4 text-center text-sm text-gray-600 border-t pt-3">
+                पहले से अकाउंट है? <button id="showLogin" class="text-emerald-600 font-bold hover:underline focus:outline-none">लॉगिन करें</button>
+            </div>
         </div>
 
     </div>
@@ -63,7 +71,7 @@
                 <h2 class="text-lg font-bold text-gray-800" id="welcomeMsg">👋 स्वागत है, </h2>
                 <button id="logoutBtn" class="bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-red-600">लॉगआउट</button>
             </div>
-
+            
             <h3 class="text-md font-semibold text-gray-700 mb-3">📋 आपकी ली गई सेवाओं का इतिहास (Service History)</h3>
             <div class="overflow-x-auto rounded-lg border border-gray-200">
                 <table class="w-full text-left border-collapse">
@@ -85,34 +93,139 @@
 
     <!-- Firebase SDK & Logic -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"; import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"; const firebaseConfig
-        = { apiKey: "AIzaSyAog1jnZwUhgeQMqJ9ADjc4AbpNPJ1Bc0", authDomain: "jansevakendraportal.firebaseapp.com", projectId: "jansevakendraportal", storageBucket: "jansevakendraportal.firebasestorage.app", messagingSenderId: "95686666227", appId: "1:95686666227:web:f75b02c8f158d8b30ea66",
-        measurementId: "G-TL0RHD6LHG" }; const app = initializeApp(firebaseConfig); const db = getFirestore(app); // 1. New Customer Registration const registerForm = document.getElementById('registerForm'); registerForm.addEventListener('submit', async
-        (e) => { e.preventDefault(); const name = document.getElementById('regName').value.trim(); const mobile = document.getElementById('regMobile').value.trim(); const password = document.getElementById('regPassword').value.trim(); try { // Check if
-        user already exists const q = query(collection(db, "customers"), where("mobile", "==", mobile)); const querySnapshot = await getDocs(q); if (!querySnapshot.empty) { alert("⚠️ यह मोबाइल नंबर पहले से रजिस्टर्ड है! कृपया लॉगिन करें।"); return; }
-        // Save new customer to Firestore await addDoc(collection(db, "customers"), { name, mobile, password }); alert("✅ रजिस्ट्रेशन सफल रहा! अब आप लॉगिन कर सकते हैं।"); registerForm.reset(); } catch (error) { console.error("Error:", error); alert("❌
-        रजिस्ट्रेशन में त्रुटि हुई!"); } }); // 2. Customer Login const loginForm = document.getElementById('loginForm'); loginForm.addEventListener('submit', async (e) => { e.preventDefault(); const mobile = document.getElementById('loginMobile').value.trim();
-        const password = document.getElementById('loginPassword').value.trim(); try { const q = query(collection(db, "customers"), where("mobile", "==", mobile), where("password", "==", password)); const querySnapshot = await getDocs(q); if (querySnapshot.empty)
-        { alert("❌ गलत मोबाइल नंबर या पासवर्ड!"); return; } let customerName = ""; querySnapshot.forEach((doc) => { customerName = doc.data().name; }); // Hide forms and show dashboard document.getElementById('loginForm').parentElement.parentElement.style.display
-        = 'none'; document.getElementById('dashboardSection').classList.remove('hidden'); document.getElementById('welcomeMsg').innerText = `👋 स्वागत है, ${customerName}`; // Load Customer History loadCustomerHistory(mobile); } catch (error) { console.error("Login
-        Error:", error); alert("❌ लॉगिन करने में समस्या आई!"); } }); // 3. Load History for Logged-in Customer async function loadCustomerHistory(mobile) { const tableBody = document.getElementById('customerHistoryBody'); tableBody.innerHTML = `
-        <tr>
-            <td colspan="4" class="p-4 text-center text-blue-600 font-medium">आपका डेटा लोड हो रहा है...</td>
-        </tr>`; try { const q = query(collection(db, "customer_services"), where("mobile", "==", mobile)); const querySnapshot = await getDocs(q); tableBody.innerHTML = ""; if (querySnapshot.empty) { tableBody.innerHTML = `
-        <tr>
-            <td colspan="4" class="p-6 text-center text-gray-500 font-medium">आपने अभी तक कोई सर्विस नहीं ली है।</td>
-        </tr>`; return; } querySnapshot.forEach((doc) => { const data = doc.data(); let statusColor = data.status === 'Completed' ? 'text-green-700 bg-green-100' : 'text-amber-700 bg-amber-100'; tableBody.innerHTML += `
-        <tr class="hover:bg-gray-50 transition">
-            <td class="p-3">${data.date}</td>
-            <td class="p-3 font-semibold text-gray-800">${data.service}</td>
-            <td class="p-3 font-medium text-gray-700">₹${data.amount}</td>
-            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${statusColor}">${data.status}</span></td>
-        </tr>
-        `; }); } catch (error) { console.error("Error loading history:", error); tableBody.innerHTML = `
-        <tr>
-            <td colspan="4" class="p-6 text-center text-red-500">डेटा लोड करने में समस्या आई।</td>
-        </tr>`; } } // Logout Button document.getElementById('logoutBtn').addEventListener('click', () => { location.reload(); });
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAog1jnZwUhgeQMqJ9ADjc4AbpNPJ1Bc0",
+            authDomain: "jansevakendraportal.firebaseapp.com",
+            projectId: "jansevakendraportal",
+            storageBucket: "jansevakendraportal.firebasestorage.app",
+            messagingSenderId: "95686666227",
+            appId: "1:95686666227:web:f75b02c8f158d8b30ea66",
+            measurementId: "G-TL0RHD6LHG"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Toggle between Login and Register views
+        const loginCard = document.getElementById('loginCard');
+        const registerCard = document.getElementById('registerCard');
+
+        document.getElementById('showRegister').addEventListener('click', () => {
+            loginCard.classList.add('hidden');
+            registerCard.classList.remove('hidden');
+        });
+
+        document.getElementById('showLogin').addEventListener('click', () => {
+            registerCard.classList.add('hidden');
+            loginCard.classList.remove('hidden');
+        });
+
+        // 1. New Customer Registration
+        const registerForm = document.getElementById('registerForm');
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const mobile = document.getElementById('regMobile').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            try {
+                const q = query(collection(db, "customers"), where("mobile", "==", mobile));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    alert("⚠️ यह मोबाइल नंबर पहले से रजिस्टर्ड है! कृपया लॉगिन करें।");
+                    return;
+                }
+
+                await addDoc(collection(db, "customers"), { name, mobile, password });
+                alert("✅ रजिस्ट्रेशन सफल रहा! अब आप लॉगिन कर सकते हैं।");
+                registerForm.reset();
+                // Switch back to login view after successful registration
+                registerCard.classList.add('hidden');
+                loginCard.classList.remove('hidden');
+            } catch (error) {
+                console.error("Error:", error);
+                alert("❌ रजिस्ट्रेशन में त्रुटि हुई!");
+            }
+        });
+
+        // 2. Customer Login
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const mobile = document.getElementById('loginMobile').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            try {
+                const q = query(collection(db, "customers"), where("mobile", "==", mobile), where("password", "==", password));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    alert("❌ गलत मोबाइल नंबर या पासवर्ड!");
+                    return;
+                }
+
+                let customerName = "";
+                querySnapshot.forEach((doc) => {
+                    customerName = doc.data().name;
+                });
+
+                // Hide login card and show dashboard
+                loginCard.classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                document.getElementById('welcomeMsg').innerText = `👋 स्वागत है, ${customerName}`;
+
+                // Load Customer History
+                loadCustomerHistory(mobile);
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("❌ लॉगिन करने में समस्या आई!");
+            }
+        });
+
+        // 3. Load History for Logged-in Customer
+        async function loadCustomerHistory(mobile) {
+            const tableBody = document.getElementById('customerHistoryBody');
+            tableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-blue-600 font-medium">आपका डेटा लोड हो रहा है...</td></tr>`;
+
+            try {
+                const q = query(collection(db, "customer_services"), where("mobile", "==", mobile));
+                const querySnapshot = await getDocs(q);
+
+                tableBody.innerHTML = "";
+
+                if (querySnapshot.empty) {
+                    tableBody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500 font-medium">आपने अभी तक कोई सर्विस नहीं ली है।</td></tr>`;
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    let statusColor = data.status === 'Completed' ? 'text-green-700 bg-green-100' : 'text-amber-700 bg-amber-100';
+                    
+                    tableBody.innerHTML += `
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="p-3">${data.date}</td>
+                            <td class="p-3 font-semibold text-gray-800">${data.service}</td>
+                            <td class="p-3 font-medium text-gray-700">₹${data.amount}</td>
+                            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${statusColor}">${data.status}</span></td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error loading history:", error);
+                tableBody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-red-500">डेटा लोड करने में समस्या आई।</td></tr>`;
+            }
+        }
+
+        // Logout Button
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            location.reload();
+        });
     </script>
 </body>
-
 </html>
