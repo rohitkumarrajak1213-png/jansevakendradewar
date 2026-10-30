@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - Jan Seva Kendra Dewar</title>
+    <style>
+        body {
+            background-color: #f4f7f6;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .dashboard-container {
+            max-width: 800px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2,
+        h3 {
+            color: #003366;
+        }
+        
+        .profile-box {
+            background: #eef2f3;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        th {
+            background-color: #003366;
+            color: white;
+        }
+        
+        .logout-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #d9534f;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+        <h2>Customer Dashboard</h2>
+
+        <div class="profile-box">
+            <h3>Swagat hai, <span id="userName">Customer</span></h3>
+            <p><strong>Mobile Number:</strong> <span id="userMobile">9876543210</span></p>
+        </div>
+
+        <h3>Aapki Service History</h3>
+        <table>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Service Name</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Online Form Apply (CSC)</td>
+                <td>2026-10-25</td>
+                <td>₹100</td>
+                <td>Completed</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Aadhar Print & Lamination</td>
+                <td>2026-10-28</td>
+                <td>₹50</td>
+                <td>Completed</td>
+            </tr>
+        </table>
+
+        <a href="login.html" class="logout-btn">Logout Karein</a>
+    </div>
+
+</body>
+
+</html>
